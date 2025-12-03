@@ -81,7 +81,7 @@ router.post('/api/auth/logout', (req, res) => {
 });
 
 // Check auth status
-router.get('/api/auth/status', (req, res) => {
+router.get('/api/auth/status', authLimiter, (req, res) => {
   const token = req.cookies.token || req.headers.authorization?.split(' ')[1];
   
   if (!token) {
