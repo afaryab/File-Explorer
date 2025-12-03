@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const fileTypes = require('../config/fileTypes');
+const { fileLimiter } = require('../middleware/rateLimiter');
 
 const router = express.Router();
 
@@ -12,7 +13,7 @@ const officeExtensions = {
 };
 
 // Get office document info
-router.get('/api/office/info/*', (req, res) => {
+router.get('/api/office/info/*', fileLimiter, (req, res) => {
   try {
     const filename = req.params['0'] || '';
     const basePath = path.join(__dirname, '../../data');

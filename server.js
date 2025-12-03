@@ -3,6 +3,7 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const path = require('path');
 const fs = require('fs');
+const { apiLimiter, fileLimiter } = require('./src/middleware/rateLimiter');
 require('dotenv').config();
 
 const app = express();
@@ -14,6 +15,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static('public'));
+
+// Apply rate limiting to API routes
+app.use('/api/', apiLimiter);
 
 // Plugin system
 const plugins = new Map();
@@ -42,7 +46,7 @@ app.get('/api/config/file-types', (req, res) => {
   res.json(fileTypes);
 });
 
-app.get('/api/files', require('./src/middleware/auth').optionalAuth, (req, res) => {
+app.get('/api/files', fileLimiter, require('./src/middleware/auth').optionalAuth, (req, res) => {
   const requestedPath = req.query.path || '/';
   const basePath = path.join(__dirname, 'data');
   const fullPath = path.join(basePath, requestedPath);
@@ -86,7 +90,7 @@ app.get('/api/files', require('./src/middleware/auth').optionalAuth, (req, res) 
   }
 });
 
-app.get('/api/file/*', require('./src/middleware/auth').optionalAuth, (req, res) => {
+app.get('/api/file/*', fileLimiter, require('./src/middleware/auth').optionalAuth, (req, res) => {
   const filename = req.params['0'] || '';
   const basePath = path.join(__dirname, 'data');
   const fullPath = path.join(basePath, filename);

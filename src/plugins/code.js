@@ -3,13 +3,14 @@ const path = require('path');
 const fs = require('fs');
 const { requireAuth } = require('../middleware/auth');
 const fileTypes = require('../config/fileTypes');
+const { fileLimiter } = require('../middleware/rateLimiter');
 
 const router = express.Router();
 
 const codeExtensions = fileTypes.code;
 
 // Get code file content
-router.get('/api/code/read/*', (req, res) => {
+router.get('/api/code/read/*', fileLimiter, (req, res) => {
   try {
     const filename = req.params['0'] || '';
     const basePath = path.join(__dirname, '../../data');
@@ -37,7 +38,7 @@ router.get('/api/code/read/*', (req, res) => {
 });
 
 // Save code file (requires auth)
-router.post('/api/code/save/*', requireAuth, (req, res) => {
+router.post('/api/code/save/*', fileLimiter, requireAuth, (req, res) => {
   try {
     const filename = req.params['0'] || '';
     const { content } = req.body;

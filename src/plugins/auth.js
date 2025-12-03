@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const path = require('path');
 const { JWT_SECRET } = require('../middleware/auth');
+const { authLimiter } = require('../middleware/rateLimiter');
 
 const router = express.Router();
 
@@ -28,7 +29,7 @@ function saveUsers(users) {
 }
 
 // Register
-router.post('/api/auth/register', async (req, res) => {
+router.post('/api/auth/register', authLimiter, async (req, res) => {
   try {
     const { username, password } = req.body;
     
@@ -53,7 +54,7 @@ router.post('/api/auth/register', async (req, res) => {
 });
 
 // Login
-router.post('/api/auth/login', async (req, res) => {
+router.post('/api/auth/login', authLimiter, async (req, res) => {
   try {
     const { username, password } = req.body;
     

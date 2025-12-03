@@ -2,13 +2,14 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const fileTypes = require('../config/fileTypes');
+const { fileLimiter } = require('../middleware/rateLimiter');
 
 const router = express.Router();
 
 const imageExtensions = fileTypes.image;
 
 // Get image metadata
-router.get('/api/image/info/*', (req, res) => {
+router.get('/api/image/info/*', fileLimiter, (req, res) => {
   try {
     const filename = req.params['0'] || '';
     const basePath = path.join(__dirname, '../../data');
