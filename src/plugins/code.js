@@ -10,7 +10,7 @@ const router = express.Router();
 const codeExtensions = fileTypes.code;
 
 // Get code file content
-router.get('/api/code/read/*', fileLimiter, (req, res) => {
+router.get('/api/code/read/*', fileLimiter, requireAuth, (req, res) => {
   try {
     const filename = req.params['0'] || '';
     const basePath = path.join(__dirname, '../../data');

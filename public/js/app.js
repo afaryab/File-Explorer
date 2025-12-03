@@ -23,12 +23,16 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Load file types configuration from server
   try {
     const response = await fetch('/api/config/file-types');
+    if (response.status === 401) {
+      window.location.href = '/login';
+      return;
+    }
     fileTypes = await response.json();
   } catch (error) {
     console.error('Failed to load file types config:', error);
   }
   
-  checkAuthStatus();
+  await checkAuthStatus();
   loadFiles('/');
 });
 
@@ -41,100 +45,29 @@ async function checkAuthStatus() {
     if (data.authenticated) {
       currentUser = data.username;
       updateUserInfo();
+    } else {
+      window.location.href = '/login';
     }
   } catch (error) {
     console.error('Auth check failed:', error);
+    window.location.href = '/login';
   }
 }
 
 function updateUserInfo() {
-  const userInfo = document.getElementById('userInfo');
+  const usernameDisplay = document.getElementById('usernameDisplay');
   if (currentUser) {
-    userInfo.innerHTML = `
-      <span>👤 ${currentUser}</span>
-      <button class="btn btn-secondary" onclick="logout()">Logout</button>
-    `;
-  } else {
-    userInfo.innerHTML = `
-      <button class="btn btn-primary" onclick="showAuthModal()">Login</button>
-    `;
-  }
-}
-
-function showAuthModal() {
-  document.getElementById('authModal').classList.add('active');
-  document.getElementById('authUsername').value = '';
-  document.getElementById('authPassword').value = '';
-  document.getElementById('authMessage').textContent = '';
-}
-
-function closeAuthModal() {
-  document.getElementById('authModal').classList.remove('active');
-}
-
-async function login() {
-  const username = document.getElementById('authUsername').value;
-  const password = document.getElementById('authPassword').value;
-  const messageEl = document.getElementById('authMessage');
-  
-  try {
-    const response = await fetch('/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password })
-    });
-    
-    const data = await response.json();
-    
-    if (response.ok) {
-      currentUser = data.username;
-      updateUserInfo();
-      closeAuthModal();
-      messageEl.textContent = '';
-    } else {
-      messageEl.textContent = data.error || 'Login failed';
-      messageEl.style.color = 'red';
-    }
-  } catch (error) {
-    messageEl.textContent = 'Login failed: ' + error.message;
-    messageEl.style.color = 'red';
-  }
-}
-
-async function register() {
-  const username = document.getElementById('authUsername').value;
-  const password = document.getElementById('authPassword').value;
-  const messageEl = document.getElementById('authMessage');
-  
-  try {
-    const response = await fetch('/api/auth/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password })
-    });
-    
-    const data = await response.json();
-    
-    if (response.ok) {
-      messageEl.textContent = 'Registration successful! Please login.';
-      messageEl.style.color = 'green';
-    } else {
-      messageEl.textContent = data.error || 'Registration failed';
-      messageEl.style.color = 'red';
-    }
-  } catch (error) {
-    messageEl.textContent = 'Registration failed: ' + error.message;
-    messageEl.style.color = 'red';
+    usernameDisplay.textContent = `👤 ${currentUser}`;
   }
 }
 
 async function logout() {
   try {
     await fetch('/api/auth/logout', { method: 'POST' });
-    currentUser = null;
-    updateUserInfo();
+    window.location.href = '/login';
   } catch (error) {
     console.error('Logout failed:', error);
+    window.location.href = '/login';
   }
 }
 
@@ -186,6 +119,12 @@ async function loadFiles(path) {
   
   try {
     const response = await fetch(`/api/files?path=${encodeURIComponent(path)}`);
+    
+    if (response.status === 401) {
+      window.location.href = '/login';
+      return;
+    }
+    
     const data = await response.json();
     
     addressBar.value = data.path || path;
