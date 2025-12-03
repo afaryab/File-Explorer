@@ -41,12 +41,12 @@ function loadPlugins() {
 }
 
 // File system routes
-app.get('/api/config/file-types', (req, res) => {
+app.get('/api/config/file-types', require('./src/middleware/auth').requireAuth, (req, res) => {
   const fileTypes = require('./src/config/fileTypes');
   res.json(fileTypes);
 });
 
-app.get('/api/files', fileLimiter, require('./src/middleware/auth').optionalAuth, (req, res) => {
+app.get('/api/files', fileLimiter, require('./src/middleware/auth').requireAuth, (req, res) => {
   const requestedPath = req.query.path || '/';
   const basePath = path.join(__dirname, 'data');
   const fullPath = path.join(basePath, requestedPath);
@@ -90,7 +90,7 @@ app.get('/api/files', fileLimiter, require('./src/middleware/auth').optionalAuth
   }
 });
 
-app.get('/api/file/*', fileLimiter, require('./src/middleware/auth').optionalAuth, (req, res) => {
+app.get('/api/file/*', fileLimiter, require('./src/middleware/auth').requireAuth, (req, res) => {
   const filename = req.params['0'] || '';
   const basePath = path.join(__dirname, 'data');
   const fullPath = path.join(basePath, filename);
@@ -107,8 +107,13 @@ app.get('/api/file/*', fileLimiter, require('./src/middleware/auth').optionalAut
   res.sendFile(fullPath);
 });
 
-// Serve main page
-app.get('/', (req, res) => {
+// Serve login page
+app.get('/login', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'login.html'));
+});
+
+// Serve main page (requires authentication)
+app.get('/', require('./src/middleware/auth').requireAuth, (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 

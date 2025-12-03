@@ -1,13 +1,14 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
+const { requireAuth } = require('../middleware/auth');
 const fileTypes = require('../config/fileTypes');
 const { fileLimiter } = require('../middleware/rateLimiter');
 
 const router = express.Router();
 
 // Get PDF file info
-router.get('/api/pdf/info/*', fileLimiter, (req, res) => {
+router.get('/api/pdf/info/*', fileLimiter, requireAuth, (req, res) => {
   try {
     const filename = req.params['0'] || '';
     const basePath = path.join(__dirname, '../../data');

@@ -29,7 +29,12 @@ function requireAuth(req, res, next) {
   const token = req.cookies.token || req.headers.authorization?.split(' ')[1];
   
   if (!token) {
-    return res.status(401).json({ error: 'Authentication required' });
+    // For API requests, return JSON error
+    if (req.path.startsWith('/api/')) {
+      return res.status(401).json({ error: 'Authentication required' });
+    }
+    // For page requests, redirect to login
+    return res.redirect('/login');
   }
   
   try {
@@ -37,7 +42,12 @@ function requireAuth(req, res, next) {
     req.user = decoded;
     next();
   } catch (error) {
-    return res.status(401).json({ error: 'Invalid token' });
+    // For API requests, return JSON error
+    if (req.path.startsWith('/api/')) {
+      return res.status(401).json({ error: 'Invalid token' });
+    }
+    // For page requests, redirect to login
+    return res.redirect('/login');
   }
 }
 

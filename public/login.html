@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - File Explorer</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    
+    .login-container {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      width: 100%;
+      max-width: 420px;
+      padding: 40px;
+      animation: slideIn 0.4s ease-out;
+    }
+    
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .logo {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .logo-icon {
+      font-size: 64px;
+      margin-bottom: 10px;
+    }
+    
+    .logo-text {
+      font-size: 28px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 8px;
+    }
+    
+    .logo-subtitle {
+      font-size: 14px;
+      color: #666;
+    }
+    
+    .form-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+      border-bottom: 2px solid #E5E5E5;
+    }
+    
+    .tab {
+      flex: 1;
+      padding: 12px;
+      background: transparent;
+      border: none;
+      font-size: 16px;
+      font-weight: 500;
+      color: #666;
+      cursor: pointer;
+      transition: all 0.3s;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+    }
+    
+    .tab.active {
+      color: #667eea;
+      border-bottom-color: #667eea;
+    }
+    
+    .tab:hover {
+      color: #667eea;
+    }
+    
+    .form-content {
+      display: none;
+    }
+    
+    .form-content.active {
+      display: block;
+      animation: fadeIn 0.3s ease-in;
+    }
+    
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #333;
+    }
+    
+    .form-input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #E5E5E5;
+      border-radius: 8px;
+      font-size: 15px;
+      transition: all 0.3s;
+      background: #F9F9F9;
+    }
+    
+    .form-input:focus {
+      outline: none;
+      border-color: #667eea;
+      background: white;
+    }
+    
+    .form-input:hover {
+      border-color: #D0D0D0;
+    }
+    
+    .btn {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      transition: all 0.3s;
+      margin-top: 8px;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+    }
+    
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+    
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .message {
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      display: none;
+      animation: slideDown 0.3s ease-out;
+    }
+    
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .message.active {
+      display: block;
+    }
+    
+    .message.error {
+      background: #fee;
+      color: #c33;
+      border: 1px solid #fcc;
+    }
+    
+    .message.success {
+      background: #efe;
+      color: #3c3;
+      border: 1px solid #cfc;
+    }
+    
+    .info-text {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 13px;
+      color: #666;
+    }
+    
+    .spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 0.8s linear infinite;
+      margin-right: 8px;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    .password-requirements {
+      font-size: 12px;
+      color: #666;
+      margin-top: 6px;
+      padding-left: 4px;
+    }
+    
+    .footer {
+      text-align: center;
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid #E5E5E5;
+      font-size: 13px;
+      color: #999;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="logo">
+      <div class="logo-icon">📁</div>
+      <div class="logo-text">File Explorer</div>
+      <div class="logo-subtitle">Secure access to your files</div>
+    </div>
+    
+    <div class="form-tabs">
+      <button class="tab active" id="loginTab" onclick="switchTab('login')">Login</button>
+      <button class="tab" id="registerTab" onclick="switchTab('register')">Register</button>
+    </div>
+    
+    <div id="message" class="message"></div>
+    
+    <!-- Login Form -->
+    <div id="loginForm" class="form-content active">
+      <form onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label class="form-label">Username</label>
+          <input type="text" class="form-input" id="loginUsername" required autocomplete="username">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" class="form-input" id="loginPassword" required autocomplete="current-password">
+        </div>
+        <button type="submit" class="btn btn-primary" id="loginButton">
+          Login
+        </button>
+      </form>
+    </div>
+    
+    <!-- Register Form -->
+    <div id="registerForm" class="form-content">
+      <form onsubmit="handleRegister(event)">
+        <div class="form-group">
+          <label class="form-label">Username</label>
+          <input type="text" class="form-input" id="registerUsername" required autocomplete="username" minlength="3">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" class="form-input" id="registerPassword" required autocomplete="new-password" minlength="6">
+          <div class="password-requirements">Minimum 6 characters</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Confirm Password</label>
+          <input type="password" class="form-input" id="registerPasswordConfirm" required autocomplete="new-password" minlength="6">
+        </div>
+        <button type="submit" class="btn btn-primary" id="registerButton">
+          Create Account
+        </button>
+      </form>
+    </div>
+    
+    <div class="info-text">
+      🔒 Your credentials are securely encrypted
+    </div>
+    
+    <div class="footer">
+      File Explorer v1.0
+    </div>
+  </div>
+  
+  <script>
+    function switchTab(tab) {
+      // Update tabs
+      document.getElementById('loginTab').classList.remove('active');
+      document.getElementById('registerTab').classList.remove('active');
+      document.getElementById(tab + 'Tab').classList.add('active');
+      
+      // Update forms
+      document.getElementById('loginForm').classList.remove('active');
+      document.getElementById('registerForm').classList.remove('active');
+      document.getElementById(tab + 'Form').classList.add('active');
+      
+      // Clear message
+      hideMessage();
+    }
+    
+    function showMessage(text, type = 'error') {
+      const message = document.getElementById('message');
+      message.textContent = text;
+      message.className = `message ${type} active`;
+    }
+    
+    function hideMessage() {
+      const message = document.getElementById('message');
+      message.className = 'message';
+    }
+    
+    function setLoading(buttonId, isLoading) {
+      const button = document.getElementById(buttonId);
+      if (isLoading) {
+        button.disabled = true;
+        button.innerHTML = '<span class="spinner"></span>Processing...';
+      } else {
+        button.disabled = false;
+        button.innerHTML = buttonId === 'loginButton' ? 'Login' : 'Create Account';
+      }
+    }
+    
+    async function handleLogin(event) {
+      event.preventDefault();
+      hideMessage();
+      
+      const username = document.getElementById('loginUsername').value;
+      const password = document.getElementById('loginPassword').value;
+      
+      if (!username || !password) {
+        showMessage('Please enter both username and password', 'error');
+        return;
+      }
+      
+      setLoading('loginButton', true);
+      
+      try {
+        const response = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          showMessage('Login successful! Redirecting...', 'success');
+          setTimeout(() => {
+            window.location.href = '/';
+          }, 1000);
+        } else {
+          showMessage(data.error || 'Login failed. Please check your credentials.', 'error');
+          setLoading('loginButton', false);
+        }
+      } catch (error) {
+        showMessage('Connection error. Please try again.', 'error');
+        setLoading('loginButton', false);
+      }
+    }
+    
+    async function handleRegister(event) {
+      event.preventDefault();
+      hideMessage();
+      
+      const username = document.getElementById('registerUsername').value;
+      const password = document.getElementById('registerPassword').value;
+      const passwordConfirm = document.getElementById('registerPasswordConfirm').value;
+      
+      if (!username || !password || !passwordConfirm) {
+        showMessage('Please fill in all fields', 'error');
+        return;
+      }
+      
+      if (username.length < 3) {
+        showMessage('Username must be at least 3 characters long', 'error');
+        return;
+      }
+      
+      if (password.length < 6) {
+        showMessage('Password must be at least 6 characters long', 'error');
+        return;
+      }
+      
+      if (password !== passwordConfirm) {
+        showMessage('Passwords do not match', 'error');
+        return;
+      }
+      
+      setLoading('registerButton', true);
+      
+      try {
+        const response = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          showMessage('Registration successful! Please login.', 'success');
+          setTimeout(() => {
+            switchTab('login');
+            document.getElementById('loginUsername').value = username;
+            document.getElementById('loginPassword').focus();
+          }, 1500);
+        } else {
+          showMessage(data.error || 'Registration failed. Please try again.', 'error');
+        }
+      } catch (error) {
+        showMessage('Connection error. Please try again.', 'error');
+      } finally {
+        setLoading('registerButton', false);
+      }
+    }
+    
+    // Check if already logged in
+    async function checkAuth() {
+      try {
+        const response = await fetch('/api/auth/status');
+        const data = await response.json();
+        
+        if (data.authenticated) {
+          window.location.href = '/';
+        }
+      } catch (error) {
+        // Not logged in, stay on login page
+      }
+    }
+    
+    checkAuth();
+  </script>
+</body>
+</html>

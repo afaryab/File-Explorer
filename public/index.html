@@ -26,46 +26,71 @@
     
     /* Top toolbar */
     .toolbar {
-      background: white;
+      background: linear-gradient(to bottom, #ffffff 0%, #f8f9fa 100%);
       border-bottom: 1px solid #E5E5E5;
-      padding: 8px 16px;
+      padding: 10px 16px;
       display: flex;
       align-items: center;
       gap: 8px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     }
     
     .toolbar-button {
-      padding: 6px 12px;
-      background: transparent;
-      border: none;
-      border-radius: 4px;
+      padding: 8px 14px;
+      background: white;
+      border: 1px solid #E5E5E5;
+      border-radius: 6px;
       cursor: pointer;
       display: flex;
       align-items: center;
       gap: 4px;
       font-size: 14px;
-      transition: background 0.2s;
+      transition: all 0.2s;
+      color: #333;
+      font-weight: 500;
     }
     
     .toolbar-button:hover {
-      background: #E5E5E5;
+      background: #F0F0F0;
+      border-color: #D0D0D0;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .toolbar-button:active {
+      transform: translateY(0);
     }
     
     .address-bar {
       flex: 1;
-      padding: 6px 12px;
-      border: 1px solid #E5E5E5;
-      border-radius: 4px;
+      padding: 8px 14px;
+      border: 1px solid #D0D0D0;
+      border-radius: 6px;
       font-size: 14px;
       background: white;
+      transition: all 0.2s;
+    }
+    
+    .address-bar:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
     }
     
     .search-box {
-      padding: 6px 12px;
-      border: 1px solid #E5E5E5;
-      border-radius: 4px;
+      padding: 8px 14px;
+      border: 1px solid #D0D0D0;
+      border-radius: 6px;
       font-size: 14px;
-      width: 200px;
+      width: 220px;
+      transition: all 0.2s;
+    }
+    
+    .search-box:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      width: 260px;
     }
     
     /* Main content area */
@@ -78,7 +103,7 @@
     /* Sidebar */
     .sidebar {
       width: 250px;
-      background: #F9F9F9;
+      background: #FAFAFA;
       border-right: 1px solid #E5E5E5;
       padding: 16px 8px;
       overflow-y: auto;
@@ -89,30 +114,36 @@
     }
     
     .sidebar-title {
-      font-size: 12px;
-      font-weight: 600;
-      color: #666;
-      padding: 0 8px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #888;
+      padding: 0 12px;
       margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
     
     .sidebar-item {
       display: flex;
       align-items: center;
-      gap: 8px;
-      padding: 8px;
-      border-radius: 4px;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 6px;
       cursor: pointer;
-      transition: background 0.2s;
+      transition: all 0.2s;
       font-size: 14px;
+      color: #333;
+      font-weight: 500;
     }
     
     .sidebar-item:hover {
-      background: #E5E5E5;
+      background: #E8E8E8;
     }
     
     .sidebar-item.active {
-      background: #E5F3FF;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
     }
     
     .icon {
@@ -143,11 +174,14 @@
     
     .breadcrumb-item {
       cursor: pointer;
-      color: #0078D4;
+      color: #667eea;
+      font-weight: 500;
+      transition: all 0.2s;
     }
     
     .breadcrumb-item:hover {
       text-decoration: underline;
+      color: #764ba2;
     }
     
     .files-grid {
@@ -165,17 +199,21 @@
       flex-direction: column;
       align-items: center;
       padding: 12px;
-      border-radius: 4px;
+      border-radius: 8px;
       cursor: pointer;
-      transition: background 0.2s;
+      transition: all 0.2s;
+      position: relative;
     }
     
     .file-item:hover {
-      background: #E5F3FF;
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
     
     .file-item.selected {
-      background: #CCE8FF;
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+      box-shadow: 0 0 0 2px #667eea;
     }
     
     .file-icon-large {
@@ -275,28 +313,49 @@
     .btn {
       padding: 8px 16px;
       border: none;
-      border-radius: 4px;
+      border-radius: 6px;
       cursor: pointer;
       font-size: 14px;
-      transition: background 0.2s;
+      font-weight: 500;
+      transition: all 0.2s;
     }
     
     .btn-primary {
-      background: #0078D4;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
+      box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
     }
     
     .btn-primary:hover {
-      background: #005A9E;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
     }
     
     .btn-secondary {
-      background: #E5E5E5;
+      background: white;
       color: #333;
+      border: 1px solid #D0D0D0;
     }
     
     .btn-secondary:hover {
-      background: #D0D0D0;
+      background: #F0F0F0;
+      border-color: #B0B0B0;
+    }
+    
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 14px;
+      padding: 6px 12px;
+      background: white;
+      border-radius: 6px;
+      border: 1px solid #E5E5E5;
+    }
+    
+    #usernameDisplay {
+      font-weight: 500;
+      color: #333;
     }
     
     /* Code editor */
@@ -379,7 +438,8 @@
       <input type="text" class="address-bar" id="addressBar" readonly>
       <input type="text" class="search-box" id="searchBox" placeholder="Search files...">
       <div class="user-info" id="userInfo">
-        <button class="btn btn-primary" onclick="showAuthModal()">Login</button>
+        <span id="usernameDisplay"></span>
+        <button class="btn btn-secondary" onclick="logout()">Logout</button>
       </div>
     </div>
     
@@ -409,33 +469,6 @@
         <div class="breadcrumb" id="breadcrumb"></div>
         <div class="files-grid" id="filesGrid">
           <div class="loading active">Loading files...</div>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <!-- Auth Modal -->
-  <div class="modal" id="authModal">
-    <div class="modal-content" style="width: 400px; height: auto;">
-      <div class="modal-header">
-        <h3>Authentication</h3>
-        <button class="close-button" onclick="closeAuthModal()">×</button>
-      </div>
-      <div class="modal-body">
-        <div class="auth-form">
-          <div class="form-group">
-            <label class="form-label">Username</label>
-            <input type="text" class="form-input" id="authUsername">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Password</label>
-            <input type="password" class="form-input" id="authPassword">
-          </div>
-          <div style="display: flex; gap: 8px; margin-top: 24px;">
-            <button class="btn btn-primary" onclick="login()">Login</button>
-            <button class="btn btn-secondary" onclick="register()">Register</button>
-          </div>
-          <div id="authMessage" style="margin-top: 16px; color: red;"></div>
         </div>
       </div>
     </div>
