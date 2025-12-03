@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .explorer-sidebar {
+    @apply bg-win11-sidebar border-r border-gray-200;
+  }
+  
+  .explorer-item {
+    @apply flex items-center gap-2 px-4 py-2 hover:bg-win11-hover cursor-pointer transition-colors rounded;
+  }
+  
+  .explorer-item:active {
+    @apply bg-gray-300;
+  }
+  
+  .file-icon {
+    @apply w-5 h-5 flex-shrink-0;
+  }
+  
+  .folder-icon {
+    @apply w-5 h-5 flex-shrink-0 text-yellow-500;
+  }
+  
+  .toolbar-button {
+    @apply px-3 py-1.5 hover:bg-win11-hover rounded transition-colors;
+  }
+  
+  .context-menu {
+    @apply absolute bg-white border border-gray-200 shadow-lg rounded-md py-1 z-50;
+  }
+  
+  .context-menu-item {
+    @apply px-4 py-2 hover:bg-win11-hover cursor-pointer;
+  }
+}
