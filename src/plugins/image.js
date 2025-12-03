@@ -1,10 +1,11 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
+const fileTypes = require('../config/fileTypes');
 
 const router = express.Router();
 
-const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp', '.svg', '.ico'];
+const imageExtensions = fileTypes.image;
 
 // Get image metadata
 router.get('/api/image/info/*', (req, res) => {

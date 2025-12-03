@@ -8,6 +8,12 @@ const { JWT_SECRET } = require('../middleware/auth');
 const router = express.Router();
 
 // Simple user storage (in production, use a database)
+// WARNING: This is for demonstration only. In production, use:
+// - A proper database (PostgreSQL, MongoDB, MySQL)
+// - User input validation and sanitization
+// - Rate limiting for authentication endpoints
+// - Proper session management
+// - Additional security measures (CAPTCHA, email verification, etc.)
 const usersFile = path.join(__dirname, '../../data/users.json');
 
 function getUsers() {

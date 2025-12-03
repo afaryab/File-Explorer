@@ -2,14 +2,11 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const { requireAuth } = require('../middleware/auth');
+const fileTypes = require('../config/fileTypes');
 
 const router = express.Router();
 
-const codeExtensions = [
-  '.js', '.jsx', '.ts', '.tsx', '.json', '.html', '.css', '.scss', 
-  '.py', '.java', '.cpp', '.c', '.h', '.go', '.rs', '.php', 
-  '.rb', '.sh', '.bash', '.yaml', '.yml', '.xml', '.sql', '.md'
-];
+const codeExtensions = fileTypes.code;
 
 // Get code file content
 router.get('/api/code/read/*', (req, res) => {

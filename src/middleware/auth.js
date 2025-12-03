@@ -1,13 +1,21 @@
 const jwt = require('jsonwebtoken');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
+// JWT Secret - MUST be set in production via environment variable
+const JWT_SECRET = process.env.JWT_SECRET;
+
+if (!JWT_SECRET && process.env.NODE_ENV === 'production') {
+  throw new Error('JWT_SECRET environment variable must be set in production');
+}
+
+// Use a default only for development
+const SECRET = JWT_SECRET || 'dev-secret-change-in-production';
 
 function optionalAuth(req, res, next) {
   const token = req.cookies.token || req.headers.authorization?.split(' ')[1];
   
   if (token) {
     try {
-      const decoded = jwt.verify(token, JWT_SECRET);
+      const decoded = jwt.verify(token, SECRET);
       req.user = decoded;
     } catch (error) {
       // Token invalid but we continue anyway (optional auth)
@@ -25,7 +33,7 @@ function requireAuth(req, res, next) {
   }
   
   try {
-    const decoded = jwt.verify(token, JWT_SECRET);
+    const decoded = jwt.verify(token, SECRET);
     req.user = decoded;
     next();
   } catch (error) {
@@ -33,4 +41,4 @@ function requireAuth(req, res, next) {
   }
 }
 
-module.exports = { optionalAuth, requireAuth, JWT_SECRET };
+module.exports = { optionalAuth, requireAuth, JWT_SECRET: SECRET };

@@ -1,13 +1,14 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
+const fileTypes = require('../config/fileTypes');
 
 const router = express.Router();
 
 const officeExtensions = {
-  word: ['.doc', '.docx'],
-  excel: ['.xls', '.xlsx', '.csv'],
-  powerpoint: ['.ppt', '.pptx']
+  word: fileTypes.word,
+  excel: fileTypes.excel,
+  powerpoint: fileTypes.powerpoint
 };
 
 // Get office document info

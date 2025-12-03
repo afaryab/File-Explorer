@@ -37,6 +37,11 @@ function loadPlugins() {
 }
 
 // File system routes
+app.get('/api/config/file-types', (req, res) => {
+  const fileTypes = require('./src/config/fileTypes');
+  res.json(fileTypes);
+});
+
 app.get('/api/files', require('./src/middleware/auth').optionalAuth, (req, res) => {
   const requestedPath = req.query.path || '/';
   const basePath = path.join(__dirname, 'data');

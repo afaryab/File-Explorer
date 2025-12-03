@@ -4,6 +4,7 @@ let currentUser = null;
 let selectedFile = null;
 let navigationHistory = ['/'];
 let historyIndex = 0;
+let fileTypes = null;
 
 // File type icons
 const fileIcons = {
@@ -18,7 +19,15 @@ const fileIcons = {
 };
 
 // Initialize
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  // Load file types configuration from server
+  try {
+    const response = await fetch('/api/config/file-types');
+    fileTypes = await response.json();
+  } catch (error) {
+    console.error('Failed to load file types config:', error);
+  }
+  
   checkAuthStatus();
   loadFiles('/');
 });
@@ -240,31 +249,36 @@ function getFileIcon(file) {
   if (file.type === 'folder') return fileIcons.folder;
   
   const ext = file.extension;
-  if (!ext) return fileIcons.default;
+  if (!ext || !fileTypes) return fileIcons.default;
   
   // Image files
-  if (['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp', '.svg', '.ico'].includes(ext)) {
+  if (fileTypes.image.includes(ext)) {
     return fileIcons.image;
   }
   
   // Code files
-  if (['.js', '.jsx', '.ts', '.tsx', '.json', '.html', '.css', '.scss', '.py', '.java', '.cpp', '.c', '.h', '.go', '.rs', '.php', '.rb', '.sh', '.bash', '.yaml', '.yml', '.xml', '.sql', '.md'].includes(ext)) {
+  if (fileTypes.code.includes(ext)) {
     return fileIcons.code;
   }
   
   // PDF
-  if (ext === '.pdf') return fileIcons.pdf;
+  if (fileTypes.pdf.includes(ext)) return fileIcons.pdf;
   
   // Office documents
-  if (['.doc', '.docx'].includes(ext)) return fileIcons.word;
-  if (['.xls', '.xlsx', '.csv'].includes(ext)) return fileIcons.excel;
-  if (['.ppt', '.pptx'].includes(ext)) return fileIcons.powerpoint;
+  if (fileTypes.word.includes(ext)) return fileIcons.word;
+  if (fileTypes.excel.includes(ext)) return fileIcons.excel;
+  if (fileTypes.powerpoint.includes(ext)) return fileIcons.powerpoint;
   
   return fileIcons.default;
 }
 
 // File viewing
 async function openFile(file) {
+  if (!fileTypes) {
+    alert('File types configuration not loaded yet');
+    return;
+  }
+  
   selectedFile = file;
   const modal = document.getElementById('fileModal');
   const title = document.getElementById('fileModalTitle');
@@ -278,7 +292,7 @@ async function openFile(file) {
   const filePath = currentPath === '/' ? `/${file.name}` : `${currentPath}/${file.name}`;
   
   // Image viewer
-  if (['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp', '.svg', '.ico'].includes(ext)) {
+  if (fileTypes.image.includes(ext)) {
     body.innerHTML = `
       <div class="image-viewer">
         <img src="/api/file/${filePath.substring(1)}" alt="${file.name}">
@@ -287,7 +301,7 @@ async function openFile(file) {
     modal.classList.add('active');
   }
   // Code editor
-  else if (['.js', '.jsx', '.ts', '.tsx', '.json', '.html', '.css', '.scss', '.py', '.java', '.cpp', '.c', '.h', '.go', '.rs', '.php', '.rb', '.sh', '.bash', '.yaml', '.yml', '.xml', '.sql', '.md', '.txt'].includes(ext)) {
+  else if (fileTypes.code.includes(ext)) {
     try {
       const response = await fetch(`/api/code/read/${filePath.substring(1)}`);
       const data = await response.json();
@@ -304,7 +318,7 @@ async function openFile(file) {
     }
   }
   // PDF viewer
-  else if (ext === '.pdf') {
+  else if (fileTypes.pdf.includes(ext)) {
     body.innerHTML = `
       <div class="pdf-viewer">
         <iframe src="/api/file/${filePath.substring(1)}"></iframe>
@@ -313,7 +327,7 @@ async function openFile(file) {
     modal.classList.add('active');
   }
   // Office documents
-  else if (['.doc', '.docx', '.xls', '.xlsx', '.csv', '.ppt', '.pptx'].includes(ext)) {
+  else if ([...fileTypes.word, ...fileTypes.excel, ...fileTypes.powerpoint].includes(ext)) {
     body.innerHTML = `
       <div class="office-viewer">
         <iframe src="https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(window.location.origin + '/api/file/' + filePath.substring(1))}"></iframe>
