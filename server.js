@@ -114,7 +114,7 @@ app.get('/login', (req, res) => {
 
 // Serve main page (requires authentication)
 app.get('/', require('./src/middleware/auth').requireAuth, (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(__dirname, 'public', 'app.html'));
 });
 
 // Load plugins
